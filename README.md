@@ -19,7 +19,7 @@ $ make
 
 Use `make up` to incrementally set up a project-specific build environment. Below are the accepted Makefile environment variables.
  * `BUILD_TOOLS`: space-separated list. List of build tools (e.g., `autoconf`) to install.
- * `RECONF_PATH`: path to a clean and reconfigure command snippet.
+ * `RECONF_PATH`: path to a clean and reconfigure command snippet. Replacement for `-x`.
 
 ### Uploading custom analyses
 
