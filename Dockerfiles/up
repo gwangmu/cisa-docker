@@ -1,0 +1,14 @@
+FROM cisa:latest
+
+ARG USER_NAME
+ARG BUILD_TOOLS
+
+RUN if [ -n "${BUILD_TOOLS}" ]; then \
+  apt-get install -y ${BUILD_TOOLS}; fi
+
+WORKDIR /etc/cisa
+USER ${USER_NAME}
+
+COPY .proj.reconf* /etc
+COPY analyzer/* /etc/cisa/cisa/src/analyzer
+RUN make -C cisa

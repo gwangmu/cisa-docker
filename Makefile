@@ -4,8 +4,8 @@ docker_perm_test=if id -aG ${USER} | grep -qw docker; then \
 		exit; \
 	fi;
 
-cisa_image_test=docker images --format "{{.Repository}}:{{.Tag}}" \
-	| grep -qw "cisa:latest"
+cisa_image_test=`docker images --format "{{.Repository}}:{{.Tag}}" \
+	| grep -qw "cisa:latest"`
 
 all:
 	@${docker_perm_test} \
@@ -15,7 +15,7 @@ all:
 	else \
 		echo "info: building..."; \
 	fi; \
-	docker build -f Dockerfile.all -t cisa:latest --label cisa \
+	docker build -f Dockerfiles/all -t cisa:latest --label cisa \
 		--build-arg USER_NAME=${USER} \
 		--build-arg USER_UID=`id -u ${USER}` \
 		--build-arg USER_GID=`id -g ${USER}` . 
@@ -31,7 +31,8 @@ up:
 	if [ -f "${RECONF_PATH}" ]; then \
 		cp ${RECONF_PATH} .proj.reconf; \
 	fi; \
-	docker build -f Dockerfile.up -t cisa:latest --label cisa \
+	docker build -f Dockerfiles/up -t cisa:latest --label cisa \
+		--build-arg USER_NAME=${USER} \
 		--build-arg BUILD_TOOLS="${BUILD_TOOLS}" .; \
 	docker image prune --force --filter='label=cisa'; \
 	rm -f .proj.reconf
