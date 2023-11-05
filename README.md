@@ -21,4 +21,6 @@ Use `make up` to incrementally set up a project-specific build environment. Belo
  * `BUILD_TOOLS`: space-separated list. List of build tools (e.g., `autoconf`) to install.
  * `RECONF_PATH`: path to a clean and reconfigure command snippet.
 
+### Uploading custom analyses
+
 `make up` also copies all custom analyses in `analysis` to CISA and rebuilds it.
