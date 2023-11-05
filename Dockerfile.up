@@ -1,0 +1,9 @@
+FROM cisa:latest
+
+ARG RECONF_PATH
+ARG BUILD_TOOLS
+
+COPY .proj.reconf* /etc
+
+RUN if [ -n "${BUILD_TOOLS}" ]; then \
+  apt-get install -y ${BUILD_TOOLS}; fi

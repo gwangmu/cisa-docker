@@ -2,20 +2,20 @@
 
 ARGS=
 REPO_PATH=
-OUT_PATH="./cisa_out"
-BUILD_SCRIPT_PATH=
+OUT_PATH="./out"
 
 _POS=0
 while [[ -n "${1}" ]]; do
-  if [[ ${1:0:1} == "-" ]]; then
-    _ARGS="${1} ${2}"
-    if [[ ${1} == "-x" ]]; then
-      BUILD_SCRIPT_PATH=${2}
-    elif [[ ${1} == "-o" ]]; then
-      CISA_OUT=${2}
-      _ARGS=""
-    fi
-    ARGS="${ARGS} ${_ARGS}"
+  if [[ ${1} == "-x" ]]; then
+    echo "error: '-x <reconf_path>' cannot be set for a docker container."
+    echo "error: use 'make RECONF=<reconf_path>' instead."
+    exit
+  elif [[ ${1} == "-o" ]]; then
+    CISA_OUT=${2}
+    shift
+    shift
+  elif [[ ${1:0:1} == "-" ]]; then
+    ARGS="${ARGS} ${1} ${2}"
     shift
     shift
   elif [[ ${_POS} == 0 ]]; then
@@ -33,14 +33,15 @@ elif [[ ! -d ${REPO_PATH} ]]; then
   exit
 fi
 
-# TODO: -x
-
 CISA_ROOT=/etc/cisa
 CONTAINER_REPO_PATH=/etc/repo
 CONTAINER_OUT_PATH=/etc/out
+CONTAINER_RECONF_PATH=/etc/.proj.reconf
 
 mkdir -p ${OUT_PATH}
-docker run --rm -t -v $(realpath ${REPO_PATH}):${CONTAINER_REPO_PATH} \
+docker run --rm -t --user ${USER} \
+  -v $(realpath ${REPO_PATH}):${CONTAINER_REPO_PATH} \
   -v $(realpath ${OUT_PATH}):${CONTAINER_OUT_PATH} cisa:latest \
   ${CISA_ROOT}/cisa/cisa \
-  ${CONTAINER_REPO_PATH} ${ARGS} -o ${CONTAINER_OUT_PATH}
+  ${CONTAINER_REPO_PATH} ${ARGS} \
+  -o ${CONTAINER_OUT_PATH} -x ${CONTAINER_RECONF_PATH}
