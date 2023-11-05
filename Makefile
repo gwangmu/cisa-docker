@@ -11,4 +11,5 @@ all:
 	fi; \
 	docker build -t cisa --build-arg USER_NAME=${USER} \
 		--build-arg USER_UID=`id -u ${USER}` \
-		--build-arg USER_GID=`id -g ${USER}` .
+		--build-arg USER_GID=`id -g ${USER}` \
+		--build-arg BUILD_TOOLS="${BUILD_TOOLS}" .

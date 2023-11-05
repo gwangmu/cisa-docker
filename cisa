@@ -28,6 +28,9 @@ done
 if [[ -z ${REPO_PATH} ]]; then
   echo "error: no repo path specified."
   exit
+elif [[ ! -d ${REPO_PATH} ]]; then
+  echo "error: wrong repo path."
+  exit
 fi
 
 # TODO: -x
@@ -36,7 +39,8 @@ CISA_ROOT=/etc/cisa
 CONTAINER_REPO_PATH=/etc/repo
 CONTAINER_OUT_PATH=/etc/out
 
-docker run -v $(realpath ${REPO_PATH}):${CONTAINER_REPO_PATH} \
+mkdir -p ${OUT_PATH}
+docker run --rm -t -v $(realpath ${REPO_PATH}):${CONTAINER_REPO_PATH} \
   -v $(realpath ${OUT_PATH}):${CONTAINER_OUT_PATH} cisa:latest \
   ${CISA_ROOT}/cisa/cisa \
   ${CONTAINER_REPO_PATH} ${ARGS} -o ${CONTAINER_OUT_PATH}

@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 ARG USER_NAME
 ARG USER_UID
 ARG USER_GID
+ARG BUILD_TOOLS
 
 ENV CISA_ROOT /etc/cisa
 ENV LLVM_URL https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.5/clang+llvm-15.0.5-x86_64-linux-gnu-ubuntu-18.04.tar.xz
@@ -16,16 +17,18 @@ RUN adduser --disabled-password --gecos '' \
 
 # Install dependencies.
 
-RUN apt-get update && \
-  apt-get install -y tzdata && \
-  apt-get install -y git build-essential wget cmake && \
-  apt-get install -y python3 python3-pip python-is-python3 && \
-  pip install gitpython termcolor alive_progress
+RUN apt-get update && apt-get install -y tzdata 
+RUN apt-get install -y git build-essential wget cmake 
+RUN apt-get install -y python3 python3-pip python-is-python3
+RUN pip install gitpython termcolor alive_progress
+
+RUN if [ -n "${BUILD_TOOLS}" ]; then \
+  apt-get install -y ${BUILD_TOOLS}; fi
+
+# Download LLVM and make.
 
 USER ${USER_NAME}
 WORKDIR ${CISA_ROOT}
-
-# Download LLVM and make.
 
 RUN git clone https://github.com/gwangmu/cisa.git && cd cisa && \
   wget ${LLVM_URL} && mkdir llvm && \
